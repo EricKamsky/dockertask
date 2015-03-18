@@ -1,4 +1,3 @@
-from celery.task import task
 from time import sleep
 import paramiko as pk
 import os, json
@@ -39,15 +38,15 @@ def docker_task(
     docker_worker=None,
     docker_name=None,
     docker_opts=None,
-    docker_command = None
-    ):
+    docker_command = None,
+    id=None):
     """
     docker_worker => the remote host to run docker container upon
     docker_name => the docker hub name for the container to run
     docker_opts => options to docker such as -v --net='host' etc
     docker_command => the command to run inside the docker
+    id => Some unique identifier of the calling task for managing output
     """
-    task_id = str(docker_task.request.id)
 
     try:
         username = os.environ['docker_username']
@@ -87,7 +86,7 @@ def docker_task(
                 sleep(5)
             else:
                 if state['ExitCode']==0:
-                    return { "host": docker_worker, "task_id": str(task_id) }
+                    return { "host": docker_worker, "task_id": id }
                 else:
                     raise Exception(state['Error'])
     else:
