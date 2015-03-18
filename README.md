@@ -1,4 +1,4 @@
-docker-task
+dockertask
 ===========
 
 Low level functions to build tasks that run on docker containers over SSH.
