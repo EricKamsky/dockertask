@@ -37,5 +37,5 @@ def test_isntrunning():
     running = tasks.isrunning(state)
     assert running == False
 
-def test_remote_task():
+def test_docker_task():
     tasks.remote_task('wind.rccc.ou.edu', 'ubuntu', docker_opts=None, docker_command='sleep 2')
