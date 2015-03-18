@@ -1,5 +1,6 @@
 import tasks
 import getpass
+import os
 
 def getusername():
     return getpass.getuser()
@@ -38,4 +39,9 @@ def test_isntrunning():
     assert running == False
 
 def test_docker_task():
-    tasks.docker_task('wind.rccc.ou.edu', 'ubuntu', docker_opts=None, docker_command='sleep 2')
+    try:
+        docker_worker = os.environ['docker_worker']
+    except:
+        print "docker_worker environment variable is unset, can't run"
+    output = tasks.docker_task(os.environ['docker_worker'],'ubuntu', docker_opts=None, docker_command='sleep 2', id="abc123")
+    assert output == { "host": os.environ['docker_worker'], "task_id": "abc123" } 
