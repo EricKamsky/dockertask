@@ -29,6 +29,7 @@ def docker_command_string(
     return docker_run
 
 def isrunning(state):
+    """ Check if docker inspect object has a state of Running = True """
     if state['Running']:
         return True
     else:
@@ -93,6 +94,7 @@ def docker_task(
         raise Exception(std_err)
 
 def docker_state(docker_id,ssh):
+    """ Using `docker inspect`, check state of a running docker """
     cmd = 'docker inspect %s' % (docker_id)
     stdin, stdout, stderr = ssh.exec_command(cmd)
     std_out = stdout.read()
