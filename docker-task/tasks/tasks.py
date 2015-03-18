@@ -47,7 +47,7 @@ def docker_task(
     docker_opts => options to docker such as -v --net='host' etc
     docker_command => the command to run inside the docker
     """
-    task_id = str(remote_task.request.id)
+    task_id = str(docker_task.request.id)
 
     try:
         username = os.environ['docker_username']
