@@ -54,13 +54,14 @@ def docker_task(
     except:
         username = getpass.getuser()
 
-    ssh = ssh_client(docker_worker, 22, username)
 
     if docker_worker == None:
         try:
             docker_worker = os.environ['docker_worker']
         except:
             print "Please set environtment variable docker_worker="
+
+    ssh = ssh_client(docker_worker, 22, username)
 
     if docker_name == None:
         try:
