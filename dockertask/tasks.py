@@ -15,14 +15,20 @@ def docker_command_string(
         docker_name,
         docker_opts=None,
         docker_command=None,
-        docker_command_args=None
+        docker_run_args=None
     ):
     """ Put together a string for running docker """
     # Set up the docker command line for remote worker
     if docker_opts == None:
-        docker_run = 'docker run -d %s' % (docker_name)
+        if docker_run_args:
+            docker_run = 'docker run %s %s' % (docker_run_args,docker_name)
+        else:
+            docker_run = 'docker run -d %s' % (docker_name)
     else:
-        docker_run = 'docker run -d %s %s' % (docker_opts, docker_name)
+        if docker_run_args:
+            docker_run = 'docker run %s %s %s' % (docker_run_args,docker_opts, docker_name)
+        else:
+            docker_run = 'docker run -d %s %s' % (docker_opts, docker_name)
     # if the command to run is specified overide default for that Dockerfile
     if docker_command != None:
         docker_run = docker_run + " " + docker_command
@@ -40,7 +46,8 @@ def docker_task(
     docker_name=None,
     docker_opts=None,
     docker_command = None,
-    id=None):
+    id=None,
+    docker_run_args = "-d"):
     """
     docker_worker => the remote host to run docker container upon
     docker_name => the docker hub name for the container to run
@@ -72,7 +79,8 @@ def docker_task(
     cmd = docker_command_string(
             docker_name,
             docker_opts,
-            docker_command)
+            docker_command,
+            docker_run_args)
 
     stdin, stdout, stderr = ssh.exec_command(cmd)
     std_err = stderr.read()
