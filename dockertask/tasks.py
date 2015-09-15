@@ -32,6 +32,8 @@ def docker_command_string(
     # if the command to run is specified overide default for that Dockerfile
     if docker_command != None:
         docker_run = docker_run + " " + docker_command
+    if os.environ.get('docker_env_cmd'): 
+        docker_run = os.environ.get('docker_env_cmd') + ' && ' + docker_run
     return docker_run
 
 def isrunning(state):
