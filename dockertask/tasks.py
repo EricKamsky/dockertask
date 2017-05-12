@@ -36,13 +36,6 @@ def docker_command_string(
         docker_run = os.environ.get('docker_env_cmd') + ' && ' + docker_run
     return docker_run
 
-def isrunning(state):
-    """ Check if docker inspect object has a state of Running = True """
-    if state['Running']:
-        return True
-    else:
-        return False
-
 def docker_task(
     docker_worker=None,
     docker_name=None,
@@ -85,35 +78,12 @@ def docker_task(
             docker_run_args)
 
     stdin, stdout, stderr = ssh.exec_command(cmd)
+    stdout.channel.recv_exit_status()
     std_err = stderr.read()
     std_out = stdout.read()
 
     if std_err == '':
-
-        docker_id = std_out.strip(' \n')
-
-        while True:
-            state = docker_state(docker_id,ssh)
-            if isrunning(state):
-                sleep(5)
-            else:
-                if state['ExitCode']==0:
-                    return { "host": docker_worker, "task_id": id }
-                else:
-                    raise Exception(state['Error'])
+        return { "host": docker_worker, "task_id": id }
     else:
         raise Exception(std_err)
 
-def docker_state(docker_id,ssh):
-    """ Using `docker inspect`, check state of a running docker """
-    cmd = 'docker inspect %s' % (docker_id)
-    if os.environ.get('docker_env_cmd'):
-        cmd = os.environ.get('docker_env_cmd') + ' && ' + cmd
-    stdin, stdout, stderr = ssh.exec_command(cmd)
-    std_out = stdout.read()
-    std_err = stderr.read()
-    if std_err == '':
-        data = json.loads(std_out)
-        return data[0]['State']
-    else:
-        raise Exception(std_err)
