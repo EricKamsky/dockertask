@@ -33,7 +33,7 @@ def docker_command_string(
     if docker_command != None:
         docker_run = docker_run + " " + docker_command
     if os.environ.get('docker_env_cmd'): 
-        docker_run = os.environ.get('docker_env_cmd') + ' && ' + docker_run
+        docker_run = os.environ.get('docker_env_cmd') + ';' + docker_run
     return docker_run
 
 def isrunning(state):
@@ -108,7 +108,7 @@ def docker_state(docker_id,ssh):
     """ Using `docker inspect`, check state of a running docker """
     cmd = 'docker inspect %s' % (docker_id)
     if os.environ.get('docker_env_cmd'):
-        cmd = os.environ.get('docker_env_cmd') + ' && ' + cmd
+        cmd = os.environ.get('docker_env_cmd') + ';' + cmd
     stdin, stdout, stderr = ssh.exec_command(cmd)
     std_out = stdout.read()
     std_err = stderr.read()
