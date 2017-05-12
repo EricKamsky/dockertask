@@ -33,7 +33,7 @@ def docker_command_string(
     if docker_command != None:
         docker_run = docker_run + " " + docker_command
     if os.environ.get('docker_env_cmd'): 
-        docker_run = os.environ.get('docker_env_cmd') + ' && ' + docker_run
+        docker_run = os.environ.get('docker_env_cmd') + ';' + docker_run
     return docker_run
 
 def docker_task(
